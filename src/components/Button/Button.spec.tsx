@@ -1,18 +1,39 @@
-import { screen, render } from "@testing-library/react";
+import React from "react";
+
+import { screen, render, fireEvent } from "@testing-library/react";
 import Button from "./Button";
 
-describe("Button", () => {
-  it("renders a button with the given text", () => {
-    render(<Button>Click me</Button>);
+// TDD - Test Driven Development
 
-    expect(screen.getByRole("button")).toHaveTextContent("Click me");
+describe("Button component", () => {
+  it("should render a button", () => {
+    render(<Button />);
+
+    expect(screen.getByRole("button")).toBeInTheDocument();
   });
-  it("runs the given function when clicked", () => {
+  it("should render a button containing the text 'Button'", () => {
+    render(<Button>Button</Button>);
+
+    expect(screen.getByRole("button")).toHaveTextContent("Button");
+  });
+  it("should call the onClick function passed as prop", () => {
     const onClick = jest.fn();
-    render(<Button onClick={onClick}>Click me</Button>);
 
-    screen.getByRole("button").click();
+    render(<Button onClick={onClick}>Button</Button>);
 
-    expect(onClick).toHaveBeenCalled();
+    const button = screen.getByRole("button");
+
+    fireEvent.click(button);
+
+    expect(onClick).toBeCalled();
+  });
+  it("should be capable to render as an anchor", () => {
+    render(
+      <Button as="a" href="http://google.com">
+        Button
+      </Button>
+    );
+
+    expect(screen.getByRole("link")).toBeInTheDocument();
   });
 });
